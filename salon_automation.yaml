@@ -1,0 +1,153 @@
+alias: Salon Akıllı Aydınlatma - Sensör Düzeltildi (Varlik 2)
+description: >-
+  Fiziksel anahtar (sanal: salon_anahtar) kapalıyken hareket algılanırsa
+  anahtarı açar ve RGB lambayı kontrol eder. GÜNCELLENEN SENSÖR:
+  binary_sensor.salon_radar_varlik_2
+triggers:
+  # 1. Sanal Anahtar Tetikleyicileri
+  - alias: Sanal Anahtar Açık
+    entity_id:
+      - input_boolean.salon_sanal_anahtar
+    to: "on"
+    id: Salon_Anahtar_Acik
+    trigger: state
+  - alias: Sanal Anahtar Kapalı
+    entity_id:
+      - input_boolean.salon_sanal_anahtar
+    to: "off"
+    id: Salon_Anahtar_Kapali
+    trigger: state
+
+  # 2. Hareket Sensörü Tetikleyicileri (GÜNCELLENDİ: varlik_2)
+  - entity_id: binary_sensor.salon_radar_varlik_2
+    to: "on"
+    id: Hareket_Var
+    alias: Hareket Var
+    trigger: state
+  - entity_id: binary_sensor.salon_radar_varlik_2
+    to: "off"
+    id: Hareket_Yok
+    alias: Hareket Yok
+    trigger: state
+
+  # 3. Lamba Durum Tetikleyicisi
+  - alias: Salon Işığı Kapalı İse
+    trigger: state
+    entity_id:
+      - light.akilli_ampul_rgb_3
+    to: "off"
+    id: Salon_Isigi_Kapali_Ise
+
+conditions:
+  # Koşullar Aktif
+  - condition: sun
+    before: sunrise
+    after: sunset
+    alias: Güneş Durumu
+  - condition: time
+    after: "18:00:00"
+    before: "00:00:00"
+    weekday:
+      - mon
+      - tue
+      - wed
+      - thu
+      - fri
+      - sat
+      - sun
+    alias: Zaman Aralığı
+
+actions:
+  - choose:
+      # SENARYO 1: Hareket Var + Anahtar Kapalı -> Anahtarı Aç + Işığı Yak
+      - conditions:
+          - condition: trigger
+            id: Hareket_Var
+          - condition: state
+            entity_id: input_boolean.salon_sanal_anahtar
+            state: "off"
+        sequence:
+          - alias: Sanal Anahtarı Aç (State'i On Yap)
+            action: input_boolean.turn_on
+            data: {}
+            target:
+              entity_id: input_boolean.salon_sanal_anahtar
+          - alias: Lamba RGB Aç (Anahtar Kapalıyken)
+            data:
+              color_temp_kelvin: 6500
+              brightness_pct: 100
+            action: light.turn_on
+            target:
+              entity_id: light.akilli_ampul_rgb_3
+
+      # SENARYO 2: Hareket Yok + Anahtar Açık -> Işığı Kapat
+      - conditions:
+          - condition: trigger
+            id: Hareket_Yok
+          - condition: state
+            entity_id: input_boolean.salon_sanal_anahtar
+            state: "on"
+        sequence:
+          - alias: Lamba RGB Kapa (Hareket Durdu)
+            action: light.turn_off
+            data: {}
+            target:
+              entity_id: light.akilli_ampul_rgb_3
+
+      # SENARYO 3: Anahtar Manuel Açıldı -> Işığı Yak
+      - conditions:
+          - condition: trigger
+            id: Salon_Anahtar_Acik
+        sequence:
+          - alias: Lamba RGB Aç (Anahtar Açık)
+            data:
+              color_temp_kelvin: 6500
+              brightness_pct: 100
+            action: light.turn_on
+            target:
+              entity_id: light.akilli_ampul_rgb_3
+
+      # SENARYO 4: Anahtar Manuel Kapandı -> Işığı Kapat
+      - conditions:
+          - condition: trigger
+            id: Salon_Anahtar_Kapali
+        sequence:
+          - alias: Lamba RGB Kapa (Anahtar Kapalı)
+            action: light.turn_off
+            data: {}
+            target:
+              entity_id: light.akilli_ampul_rgb_3
+
+      # SENARYO 5: Hareket Var + Anahtar Zaten Açık -> Işığı Tazele/Yak
+      - conditions:
+          - condition: trigger
+            id: Hareket_Var
+          - condition: state
+            entity_id: input_boolean.salon_sanal_anahtar
+            state: "on"
+        sequence:
+          - alias: Lamba RGB Aç (Anahtar Zaten Açık)
+            data:
+              color_temp_kelvin: 6500
+              brightness_pct: 100
+            action: light.turn_on
+            target:
+              entity_id: light.akilli_ampul_rgb_3
+
+      # SENARYO 6: Lamba Kapanırsa Ama İçeride Hareket Varsa -> Tekrar Yak
+      - conditions:
+          - condition: trigger
+            id:
+              - Salon_Isigi_Kapali_Ise
+          - condition: state
+            entity_id: binary_sensor.salon_radar_varlik_2
+            state: "on"
+        sequence:
+          - action: light.turn_on
+            metadata: {}
+            data:
+              color_temp_kelvin: 6490
+              brightness_pct: 100
+            target:
+              entity_id: light.akilli_ampul_rgb_3
+mode: single

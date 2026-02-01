@@ -1,0 +1,124 @@
+# Home Assistant configuration.yaml için yapılandırma
+# Bu dosyada iki cihaz tanımlıdır: "Salon" ve "Zeynep"
+# Cihazlarınızı kurarken Web Arayüzünden isimlerini tam olarak "Salon" ve "Zeynep" olarak ayarladığınızdan emin olun.
+
+mqtt:
+  binary_sensor:
+    # --- Cihaz 1: SALON ---
+    - name: "Salon Varlık"
+      unique_id: "ld2410_salon_varlik"
+      state_topic: "ld2410/salon/durum"
+      value_template: "{{ value_json.varlik }}"
+      device_class: occupancy
+
+    # --- Cihaz 2: ZEYNEP ---
+    - name: "Zeynep Varlık"
+      unique_id: "ld2410_zeynep_varlik"
+      state_topic: "ld2410/zeynep/durum"
+      value_template: "{{ value_json.varlik }}"
+      device_class: occupancy
+
+  sensor:
+    # ==========================
+    # SALON SENSÖRLERİ
+    # ==========================
+    - name: "Salon Hareket Mesafesi"
+      unique_id: "ld2410_salon_hareket_mesafesi"
+      state_topic: "ld2410/salon/durum"
+      value_template: "{{ value_json.hareket_mesafesi }}"
+      unit_of_measurement: "cm"
+      icon: "mdi:arrow-expand-horizontal"
+
+    - name: "Salon Hareket Enerjisi"
+      unique_id: "ld2410_salon_hareket_enerjisi"
+      state_topic: "ld2410/salon/durum"
+      value_template: "{{ value_json.hareket_enerjisi }}"
+      unit_of_measurement: "%"
+      icon: "mdi:run"
+
+    - name: "Salon Duran Mesafe"
+      unique_id: "ld2410_salon_duran_mesafe"
+      state_topic: "ld2410/salon/durum"
+      value_template: "{{ value_json.duran_mesafe }}"
+      unit_of_measurement: "cm"
+      icon: "mdi:arrow-expand-horizontal"
+
+    - name: "Salon Duran Enerji"
+      unique_id: "ld2410_salon_duran_enerji"
+      state_topic: "ld2410/salon/durum"
+      value_template: "{{ value_json.duran_enerji }}"
+      unit_of_measurement: "%"
+      icon: "mdi:human-male"
+
+    - name: "Salon Sıcaklık"
+      unique_id: "ld2410_salon_sicaklik"
+      state_topic: "ld2410/salon/durum"
+      value_template: "{{ value_json.sicaklik }}"
+      unit_of_measurement: "°C"
+      device_class: temperature
+
+    - name: "Salon WiFi Sinyal Gücü"
+      unique_id: "ld2410_salon_sinyal"
+      state_topic: "ld2410/salon/durum"
+      value_template: "{{ value_json.sinyal_gucu }}"
+      unit_of_measurement: "dBm"
+      device_class: signal_strength
+
+    - name: "Salon Çalışma Süresi"
+      unique_id: "ld2410_salon_calisma_suresi"
+      state_topic: "ld2410/salon/durum"
+      value_template: "{{ value_json.calisma_suresi }}"
+      unit_of_measurement: "s"
+      device_class: duration
+
+    # ==========================
+    # ZEYNEP SENSÖRLERİ
+    # ==========================
+    - name: "Zeynep Hareket Mesafesi"
+      unique_id: "ld2410_zeynep_hareket_mesafesi"
+      state_topic: "ld2410/zeynep/durum"
+      value_template: "{{ value_json.hareket_mesafesi }}"
+      unit_of_measurement: "cm"
+      icon: "mdi:arrow-expand-horizontal"
+
+    - name: "Zeynep Hareket Enerjisi"
+      unique_id: "ld2410_zeynep_hareket_enerjisi"
+      state_topic: "ld2410/zeynep/durum"
+      value_template: "{{ value_json.hareket_enerjisi }}"
+      unit_of_measurement: "%"
+      icon: "mdi:run"
+
+    - name: "Zeynep Duran Mesafe"
+      unique_id: "ld2410_zeynep_duran_mesafe"
+      state_topic: "ld2410/zeynep/durum"
+      value_template: "{{ value_json.duran_mesafe }}"
+      unit_of_measurement: "cm"
+      icon: "mdi:arrow-expand-horizontal"
+
+    - name: "Zeynep Duran Enerji"
+      unique_id: "ld2410_zeynep_duran_enerji"
+      state_topic: "ld2410/zeynep/durum"
+      value_template: "{{ value_json.duran_enerji }}"
+      unit_of_measurement: "%"
+      icon: "mdi:human-male"
+
+    - name: "Zeynep Sıcaklık"
+      unique_id: "ld2410_zeynep_sicaklik"
+      state_topic: "ld2410/zeynep/durum"
+      value_template: "{{ value_json.sicaklik }}"
+      unit_of_measurement: "°C"
+      device_class: temperature
+
+    - name: "Zeynep WiFi Sinyal Gücü"
+      unique_id: "ld2410_zeynep_sinyal"
+      state_topic: "ld2410/zeynep/durum"
+      value_template: "{{ value_json.sinyal_gucu }}"
+      unit_of_measurement: "dBm"
+      device_class: signal_strength
+
+    - name: "Zeynep Çalışma Süresi"
+      unique_id: "ld2410_zeynep_calisma_suresi"
+      state_topic: "ld2410/zeynep/durum"
+      value_template: "{{ value_json.calisma_suresi }}"
+      unit_of_measurement: "s"
+      device_class: duration

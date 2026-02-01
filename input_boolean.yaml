@@ -1,0 +1,7 @@
+# Bu kodu configuration.yaml dosyanıza ekleyin
+# veya input_boolean.yaml dosyanız varsa oraya kopyalayın.
+
+input_boolean:
+  salon_sanal_anahtar:
+    name: Salon Sanal Anahtar (Test)
+    icon: mdi:toggle-switch
